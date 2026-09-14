@@ -1,0 +1,32 @@
+:root {
+    /* Cor — console técnico escuro, não o tema SaaS genérico */
+    --cor-fundo: #0F1417;
+    --cor-superficie: #171D21;
+    --cor-superficie-alta: #1D2429;
+    --cor-borda: #262E33;
+    --cor-texto: #E7EDF0;
+    --cor-texto-secundario: #8B98A0;
+    --cor-acento: #3FA9F5;
+    --cor-acento-hover: #62BBFA;
+
+    --cor-status-ok: #3ECF8E;
+    --cor-status-warning: #F5A623;
+    --cor-status-critico: #F5484A;
+    --cor-status-neutro: #565F66;
+
+    /* Tipografia */
+    --fonte-ui: 'IBM Plex Sans', -apple-system, sans-serif;
+    --fonte-dados: 'IBM Plex Mono', 'Courier New', monospace;
+
+    /* Espaçamento */
+    --espaco-1: 4px;
+    --espaco-2: 8px;
+    --espaco-3: 12px;
+    --espaco-4: 16px;
+    --espaco-5: 24px;
+    --espaco-6: 32px;
+    --espaco-7: 48px;
+
+    --raio-borda: 4px;
+    --largura-sidebar: 220px;
+}

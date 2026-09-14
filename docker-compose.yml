@@ -1,0 +1,90 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: monitoramento-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-monitoramento}
+      POSTGRES_USER: ${POSTGRES_USER:-monitoramento}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-monitoramento}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-monitoramento} -d ${POSTGRES_DB:-monitoramento}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - monitoramento-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: monitoramento-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-monitoramento}
+      DATABASE_USERNAME: ${POSTGRES_USER:-monitoramento}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-monitoramento}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no arquivo .env}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-28800000}
+      CAMERA_CREDENTIAL_SECRET: ${CAMERA_CREDENTIAL_SECRET:?defina CAMERA_CREDENTIAL_SECRET no arquivo .env}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:8081}
+      FFMPEG_PATH: ffmpeg
+      HLS_OUTPUT_DIR: /var/lib/monitoramento/hls
+      HLS_INATIVIDADE_TIMEOUT: ${HLS_INATIVIDADE_TIMEOUT:-60}
+      DISCO_PATH_PADRAO: ${DISCO_PATH_PADRAO:-/}
+    volumes:
+      - hls_scratch:/var/lib/monitoramento/hls
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    networks:
+      - monitoramento-net
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8082:8080
+    networks:
+      - monitoramento-net
+      
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: monitoramento-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8081:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - monitoramento-net
+
+volumes:
+  postgres_data:
+  hls_scratch:
+
+networks:
+  monitoramento-net:
+    driver: bridge

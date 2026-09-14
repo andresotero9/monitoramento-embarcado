@@ -1,0 +1,81 @@
+@import './tokens.css';
+
+* {
+    box-sizing: border-box;
+}
+
+html, body, #app {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: var(--fonte-ui);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 600;
+    margin: 0 0 var(--espaco-3) 0;
+    letter-spacing: -0.01em;
+}
+
+a {
+    color: var(--cor-acento);
+}
+
+.dado-numerico {
+    font-family: var(--fonte-dados);
+    font-variant-numeric: tabular-nums;
+}
+
+.superficie {
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    padding: var(--espaco-5);
+}
+
+.grade-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--espaco-4);
+}
+
+.rotulo-secundario {
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+}
+
+.pagina {
+    padding: var(--espaco-6);
+    max-width: 1280px;
+}
+
+.cabecalho-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--espaco-5);
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--espaco-2);
+    padding: var(--espaco-1) var(--espaco-3);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--cor-borda);
+}
+
+.status-pill__ponto {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
